@@ -1,8 +1,10 @@
-import 'src/bloc/provider.dart';
 import 'package:flutter/material.dart';
+
+import 'src/bloc/provider.dart';
 
 import 'src/pages/home_page.dart';
 import 'src/pages/login_page.dart';
+import 'src/pages/producto_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
     return Provider(
       child: MaterialApp(
         title: 'Material App',
-        initialRoute: 'login',
+        initialRoute: 'home',
         debugShowCheckedModeBanner: false,
         theme: ThemeData( 
           primaryColor: Colors.deepPurple,
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
         routes: {
           'login': (BuildContext context) => LoginPage(),
           'home': (BuildContext context) => HomePage(),
+          'producto': (BuildContext context) => ProductoPage(),
         },
         home: Scaffold(
           appBar: AppBar(

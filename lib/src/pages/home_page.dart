@@ -10,6 +10,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Home'),
       ),
+      floatingActionButton: _crearBoton(context),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -19,6 +20,14 @@ class HomePage extends StatelessWidget {
           Text('Password: ${bloc.password}'),
         ],
       ),
+    );
+  }
+
+  _crearBoton(BuildContext context) {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      backgroundColor: Colors.deepPurple,
+      onPressed: () => Navigator.pushNamed(context, 'producto'),
     );
   }
 }
