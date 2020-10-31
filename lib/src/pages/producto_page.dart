@@ -1,4 +1,5 @@
 import 'package:flup/src/models/producto_model.dart';
+import 'package:flup/src/providers/productos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flup/src/utils/utils.dart' as utils;
 
@@ -12,6 +13,8 @@ class ProductoPage extends StatefulWidget {
 class _ProductoPageState extends State<ProductoPage> {
   final formKey = GlobalKey<FormState>();
   ProductoModel productoModel = new ProductoModel();
+
+  final productoProvider = new ProductosProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -94,11 +97,6 @@ class _ProductoPageState extends State<ProductoPage> {
     );
   }
 
-  void _submit() {
-    if (!formKey.currentState.validate()) return;
-    formKey.currentState.save();
-  }
-
   Widget _crearDisponible() {
     return SwitchListTile(
       value: productoModel.disponible,
@@ -108,5 +106,11 @@ class _ProductoPageState extends State<ProductoPage> {
         () => productoModel.disponible = value,
       ),
     );
+  }
+
+  void _submit() {
+    if (!formKey.currentState.validate()) return;
+    formKey.currentState.save();
+    productoProvider.create(productoModel);
   }
 }

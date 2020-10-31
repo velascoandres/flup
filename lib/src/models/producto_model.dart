@@ -1,4 +1,6 @@
-class ProductoModel {
+import 'package:flup/src/library/serializable_model.dart';
+
+class ProductoModel implements DeserializableModel {
     ProductoModel({
         this.id,
         this.titulo = '',
