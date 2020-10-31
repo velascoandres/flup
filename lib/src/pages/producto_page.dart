@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flup/src/utils/utils.dart' as utils;
 
 class ProductoPage extends StatefulWidget {
   ProductoPage({Key key}) : super(key: key);
@@ -8,6 +9,8 @@ class ProductoPage extends StatefulWidget {
 }
 
 class _ProductoPageState extends State<ProductoPage> {
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +31,7 @@ class _ProductoPageState extends State<ProductoPage> {
         child: Container(
           padding: EdgeInsets.all(15),
           child: Form(
+            key: formKey,
             child: Column(
               children: <Widget>[
                 _crearNombre(),
@@ -43,20 +47,27 @@ class _ProductoPageState extends State<ProductoPage> {
 
   Widget _crearNombre() {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
         labelText: 'Producto',
       ),
+      validator: (value) {
+        return value.length < 3 ? 'Ingrese el nombre del producto' : null;
+      },
     );
   }
 
   Widget _crearPrecio() {
     return TextFormField(
-      keyboardType: TextInputType.numberWithOptions(decimal: true),
-      decoration: InputDecoration(
-        labelText: 'Precio',
-      ),
-    );
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        decoration: InputDecoration(
+          labelText: 'Precio',
+        ),
+        validator: (value) {
+          return utils.isNumeric(value) ? null : 'Ingrese un número';
+        });
   }
 
   Widget _crearBoton() {
@@ -72,7 +83,11 @@ class _ProductoPageState extends State<ProductoPage> {
         ),
       ),
       icon: Icon(Icons.save),
-      onPressed: () {},
+      onPressed: _submit,
     );
+  }
+
+  void _submit() {
+    if (!formKey.currentState.validate()) return;
   }
 }
