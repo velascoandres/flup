@@ -1,3 +1,4 @@
+import 'package:flup/src/models/producto_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flup/src/utils/utils.dart' as utils;
 
@@ -10,6 +11,7 @@ class ProductoPage extends StatefulWidget {
 
 class _ProductoPageState extends State<ProductoPage> {
   final formKey = GlobalKey<FormState>();
+  ProductoModel productoModel = new ProductoModel();
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class _ProductoPageState extends State<ProductoPage> {
               children: <Widget>[
                 _crearNombre(),
                 _crearPrecio(),
+                _crearDisponible(),
                 _crearBoton(),
               ],
             ),
@@ -47,8 +50,10 @@ class _ProductoPageState extends State<ProductoPage> {
 
   Widget _crearNombre() {
     return TextFormField(
+      initialValue: productoModel.titulo,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       textCapitalization: TextCapitalization.sentences,
+      onSaved: (value) => productoModel.titulo = value,
       decoration: InputDecoration(
         labelText: 'Producto',
       ),
@@ -60,8 +65,10 @@ class _ProductoPageState extends State<ProductoPage> {
 
   Widget _crearPrecio() {
     return TextFormField(
+        initialValue: productoModel.valor.toString(),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         keyboardType: TextInputType.numberWithOptions(decimal: true),
+        onSaved: (value) => productoModel.valor = double.parse(value),
         decoration: InputDecoration(
           labelText: 'Precio',
         ),
@@ -89,5 +96,17 @@ class _ProductoPageState extends State<ProductoPage> {
 
   void _submit() {
     if (!formKey.currentState.validate()) return;
+    formKey.currentState.save();
+  }
+
+  Widget _crearDisponible() {
+    return SwitchListTile(
+      value: productoModel.disponible,
+      title: Text('Disponible'),
+      activeColor: Colors.deepPurple,
+      onChanged: (value) => setState(
+        () => productoModel.disponible = value,
+      ),
+    );
   }
 }
