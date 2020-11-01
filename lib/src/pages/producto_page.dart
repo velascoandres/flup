@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flup/src/models/producto_model.dart';
 import 'package:flup/src/providers/productos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flup/src/utils/utils.dart' as utils;
 
+import 'dart:async';
 class ProductoPage extends StatefulWidget {
   ProductoPage({Key key}) : super(key: key);
 
@@ -131,7 +130,6 @@ class _ProductoPageState extends State<ProductoPage> {
           await productoProvider.update(productoModel.id, productoModel);
       if (edito) {
         mostrarSnackbar('Producto editado!!');
-        // Navigator.pop(context);
       } else {
         mostrarSnackbar('Error al editar!!');
       }
@@ -145,8 +143,6 @@ class _ProductoPageState extends State<ProductoPage> {
       }
     }
     Timer(Duration(seconds: 1), () => Navigator.pop(context)   );  
-
-    // setState(() => _guardando = false);
   }
 
   void mostrarSnackbar(String mensaje) {
