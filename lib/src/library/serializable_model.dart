@@ -1,3 +1,3 @@
-abstract class DeserializableModel {
+abstract class DeserializableModel<T> {
   Map<String, dynamic> toJson();
 }
