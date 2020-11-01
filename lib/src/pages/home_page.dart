@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:flup/src/bloc/provider.dart';
 import 'package:flup/src/models/producto_model.dart';
 import 'package:flup/src/providers/productos_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:flup/src/utils/utils.dart' as utils;
 
 class HomePage extends StatelessWidget {
   final productosProvider = new ProductosProvider();
@@ -56,8 +58,21 @@ class HomePage extends StatelessWidget {
       background: Container(
         color: Colors.redAccent,
       ),
-      onDismissed: (address) {
-        // TODO: Borrar Producto
+      onDismissed: (address) async {
+        final bool borro = await productosProvider.delete(producto.id);
+        if (borro) {
+          utils.mostrarSnackbar(
+            context,
+            mensaje: 'Producto Borrado!!',
+            onPressed: () {},
+          );
+        } else {
+          utils.mostrarSnackbar(
+            context,
+            mensaje: 'Error al borrar!!',
+            onPressed: () {},
+          );
+        }
       },
       child: ListTile(
         title: Text('${producto.titulo} - ${producto.valor}'),

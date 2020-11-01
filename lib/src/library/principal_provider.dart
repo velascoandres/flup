@@ -15,12 +15,12 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
   Future<bool> create(
     T model,
   ) async {
-    final uri = '$url/$segmento';
+    final uri = '$url/$segmento.json';
     final modelParsed = json.encode(model.toJson());
-    final response = await http.post(uri, body: modelParsed);
 
     // Handling response
     try {
+      final response = await http.post(uri, body: modelParsed);
       if (response.statusCode == 200) return true;
       return false;
     } catch (error) {
@@ -32,7 +32,7 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
   Future<List<T>> findAll(
     FromJsonCallBack fromJsonCallBack,
   ) async {
-    final uri = '$url/$segmento';
+    final uri = '$url/$segmento.json';
     final response = await http.get(uri);
 
     final List<T> list = new List();
@@ -46,7 +46,12 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
 
         decodedData.forEach(
           (id, model) {
-            final T parsedModel = fromJsonCallBack(model);
+            final T parsedModel = fromJsonCallBack(
+              {
+                ...model,
+                'id': id,
+              },
+            );
             list.add(parsedModel);
           },
         );
@@ -56,6 +61,21 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
     } catch (error) {
       print(error);
       return [];
+    }
+  }
+
+  Future<bool> delete(
+    String id,
+  ) async {
+    final uri = '$url/$segmento/$id.json';
+    print(uri);
+    try {
+      final response = await http.delete(uri);
+      if (response.statusCode == 200) return true;
+      return false;
+    } catch (error) {
+      print(error);
+      return false;
     }
   }
 }
