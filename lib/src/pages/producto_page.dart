@@ -42,7 +42,7 @@ class _ProductoPageState extends State<ProductoPage> {
           ),
           IconButton(
             icon: Icon(Icons.camera_alt),
-            onPressed: _tomarFoto,
+            onPressed: () => _seleccionarFoto(camara: true),
           ),
         ],
       ),
@@ -161,9 +161,10 @@ class _ProductoPageState extends State<ProductoPage> {
     scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
-  void _seleccionarFoto() async {
+  void _seleccionarFoto({bool camara: false}) async {
+    final _source = camara ? ImageSource.camera : ImageSource.gallery;
     try {
-      final picketFile = await picker.getImage(source: ImageSource.gallery);
+      final picketFile = await picker.getImage(source: _source);
       if (picketFile != null) {
         _image = File(picketFile.path);
       } else {
@@ -174,9 +175,6 @@ class _ProductoPageState extends State<ProductoPage> {
     }
     setState(() {});
   }
-
-  void _tomarFoto() {}
-
   _mostrarFoto() {
     if (productoModel.fotoUrl != null) {
       // TODO arreglar esto
