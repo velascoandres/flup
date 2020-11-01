@@ -1,9 +1,13 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:flup/src/constants/images_paths.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:flup/src/models/producto_model.dart';
 import 'package:flup/src/providers/productos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flup/src/utils/utils.dart' as utils;
 
-import 'dart:async';
 class ProductoPage extends StatefulWidget {
   ProductoPage({Key key}) : super(key: key);
 
@@ -19,6 +23,9 @@ class _ProductoPageState extends State<ProductoPage> {
 
   final productoProvider = new ProductosProvider();
 
+  final picker = ImagePicker();
+  File _image;
+
   @override
   Widget build(BuildContext context) {
     final ProductoModel productoArg = ModalRoute.of(context).settings.arguments;
@@ -31,11 +38,11 @@ class _ProductoPageState extends State<ProductoPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.photo_size_select_actual),
-            onPressed: () {},
+            onPressed: _seleccionarFoto,
           ),
           IconButton(
             icon: Icon(Icons.camera_alt),
-            onPressed: () {},
+            onPressed: _tomarFoto,
           ),
         ],
       ),
@@ -46,6 +53,7 @@ class _ProductoPageState extends State<ProductoPage> {
             key: formKey,
             child: Column(
               children: <Widget>[
+                _mostrarFoto(),
                 _crearNombre(),
                 _crearPrecio(),
                 _crearDisponible(),
@@ -142,7 +150,7 @@ class _ProductoPageState extends State<ProductoPage> {
         mostrarSnackbar('Error al crear!!');
       }
     }
-    Timer(Duration(seconds: 1), () => Navigator.pop(context)   );  
+    Timer(Duration(seconds: 1), () => Navigator.pop(context));
   }
 
   void mostrarSnackbar(String mensaje) {
@@ -151,5 +159,43 @@ class _ProductoPageState extends State<ProductoPage> {
       duration: Duration(milliseconds: 1500),
     );
     scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  void _seleccionarFoto() async {
+    try {
+      final picketFile = await picker.getImage(source: ImageSource.gallery);
+      if (picketFile != null) {
+        _image = File(picketFile.path);
+      } else {
+        print('Imagen no seleccionada');
+      }
+    } catch (error) {
+      print(error);
+    }
+    setState(() {});
+  }
+
+  void _tomarFoto() {}
+
+  _mostrarFoto() {
+    if (productoModel.fotoUrl != null) {
+      // TODO arreglar esto
+      return Container();
+    }
+    if (_image != null) {
+      return Image.file(
+        _image,
+        height: 300,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image(
+        image: AssetImage(
+          NO_IMAGE,
+        ),
+        height: 300,
+        fit: BoxFit.cover,
+      );
+    }
   }
 }
