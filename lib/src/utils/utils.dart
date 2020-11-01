@@ -10,7 +10,7 @@ void mostrarSnackbar(
   BuildContext context, {
   String mensaje: '',
   String label: '',
-  Function onPressed: null,
+  Function onPressed,
 }) {
   final snackBar = SnackBar(
     content: Text(mensaje),

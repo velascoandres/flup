@@ -29,6 +29,24 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
     }
   }
 
+  Future<bool> update(
+    String id,
+    T model,
+  ) async {
+    final uri = '$url/$segmento/$id.json';
+    final modelParsed = json.encode(model.toJson());
+
+    // Handling response
+    try {
+      final response = await http.put(uri, body: modelParsed);
+      if (response.statusCode == 200) return true;
+      return false;
+    } catch (error) {
+      print(error);
+      return false;
+    }
+  }
+
   Future<List<T>> findAll(
     FromJsonCallBack fromJsonCallBack,
   ) async {

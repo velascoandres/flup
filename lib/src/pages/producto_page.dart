@@ -18,6 +18,9 @@ class _ProductoPageState extends State<ProductoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ProductoModel productoArg = ModalRoute.of(context).settings.arguments;
+    if (productoArg != null) productoModel = productoArg;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Producto'),
@@ -42,7 +45,7 @@ class _ProductoPageState extends State<ProductoPage> {
                 _crearNombre(),
                 _crearPrecio(),
                 _crearDisponible(),
-                _crearBoton(),
+                _guardarBoton(),
               ],
             ),
           ),
@@ -80,19 +83,24 @@ class _ProductoPageState extends State<ProductoPage> {
         });
   }
 
-  Widget _crearBoton() {
+  Widget _guardarBoton() {
+    final bool debeEditar = productoModel.id != null;
+    final String mensaje = debeEditar ? 'Editar' : 'Guardar';
+    final Color color = debeEditar ? Colors.blueAccent : Colors.green;
+    final IconData icono = debeEditar ? Icons.update : Icons.save;
+
     return RaisedButton.icon(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
-      color: Colors.deepPurple,
+      color: color,
       label: Text(
-        'Guardar',
+        mensaje,
         style: TextStyle(
           color: Colors.white,
         ),
       ),
-      icon: Icon(Icons.save),
+      icon: Icon(icono),
       onPressed: _submit,
     );
   }
@@ -108,9 +116,40 @@ class _ProductoPageState extends State<ProductoPage> {
     );
   }
 
-  void _submit() {
+  void _submit() async {
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
-    productoProvider.create(productoModel);
+    final bool debeEditar = productoModel.id != null;
+    if (debeEditar) {
+      final bool edito = await productoProvider.update(productoModel.id, productoModel);
+      if (edito){
+          // utils.mostrarSnackbar(
+          //   context,
+          //   mensaje: 'Producto editado!!',
+          //   onPressed: () {},
+          // );
+      } else {
+          // utils.mostrarSnackbar(
+          //   context,
+          //   mensaje: 'Error al editar!!',
+          //   onPressed: () {},
+          // );
+      }
+    } else {
+      final bool creo = await productoProvider.create(productoModel);
+      if (creo){
+          // utils.mostrarSnackbar(
+          //   context,
+          //   mensaje: 'Producto creado!!',
+          //   onPressed: () {},
+          // );
+      } else {
+          // utils.mostrarSnackbar(
+          //   context,
+          //   mensaje: 'Error al crear!!',
+          //   onPressed: () {},
+          // );
+      }
+    }
   }
 }

@@ -24,7 +24,7 @@ class ProductoModel implements DeserializableModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        // "id": id,
         "titulo": titulo,
         "valor": valor,
         "disponible": disponible,
