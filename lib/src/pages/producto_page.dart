@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flup/src/models/producto_model.dart';
 import 'package:flup/src/providers/productos_provider.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,9 @@ class ProductoPage extends StatefulWidget {
 
 class _ProductoPageState extends State<ProductoPage> {
   final formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   ProductoModel productoModel = new ProductoModel();
+  bool _guardando = false;
 
   final productoProvider = new ProductosProvider();
 
@@ -22,6 +26,7 @@ class _ProductoPageState extends State<ProductoPage> {
     if (productoArg != null) productoModel = productoArg;
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Producto'),
         actions: [
@@ -101,7 +106,7 @@ class _ProductoPageState extends State<ProductoPage> {
         ),
       ),
       icon: Icon(icono),
-      onPressed: _submit,
+      onPressed: _guardando ? null : () => _submit(context),
     );
   }
 
@@ -116,40 +121,39 @@ class _ProductoPageState extends State<ProductoPage> {
     );
   }
 
-  void _submit() async {
+  void _submit(BuildContext context) async {
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
     final bool debeEditar = productoModel.id != null;
+    setState(() => _guardando = true);
     if (debeEditar) {
-      final bool edito = await productoProvider.update(productoModel.id, productoModel);
-      if (edito){
-          // utils.mostrarSnackbar(
-          //   context,
-          //   mensaje: 'Producto editado!!',
-          //   onPressed: () {},
-          // );
+      final bool edito =
+          await productoProvider.update(productoModel.id, productoModel);
+      if (edito) {
+        mostrarSnackbar('Producto editado!!');
+        // Navigator.pop(context);
       } else {
-          // utils.mostrarSnackbar(
-          //   context,
-          //   mensaje: 'Error al editar!!',
-          //   onPressed: () {},
-          // );
+        mostrarSnackbar('Error al editar!!');
       }
     } else {
       final bool creo = await productoProvider.create(productoModel);
-      if (creo){
-          // utils.mostrarSnackbar(
-          //   context,
-          //   mensaje: 'Producto creado!!',
-          //   onPressed: () {},
-          // );
+      if (creo) {
+        mostrarSnackbar('Producto creado!!');
+        Navigator.pop(context);
       } else {
-          // utils.mostrarSnackbar(
-          //   context,
-          //   mensaje: 'Error al crear!!',
-          //   onPressed: () {},
-          // );
+        mostrarSnackbar('Error al crear!!');
       }
     }
+    Timer(Duration(seconds: 1), () => Navigator.pop(context)   );  
+
+    // setState(() => _guardando = false);
+  }
+
+  void mostrarSnackbar(String mensaje) {
+    final snackBar = SnackBar(
+      content: Text(mensaje),
+      duration: Duration(milliseconds: 1500),
+    );
+    scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
