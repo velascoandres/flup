@@ -1,3 +1,4 @@
+import 'package:flup/src/constants/images_paths.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flup/src/bloc/provider.dart';
@@ -74,11 +75,34 @@ class HomePage extends StatelessWidget {
           );
         }
       },
-      child: ListTile(
-        title: Text('${producto.titulo} - ${producto.valor}'),
-        subtitle: Text('${producto.id}'),
-        onTap: () => Navigator.pushNamed(context, 'producto', arguments: producto),
+      child: Card(
+        child: Column(
+          children: [
+            _mostarImagenProducto(producto),
+            ListTile(
+              title: Text('${producto.titulo} - ${producto.valor}'),
+              subtitle: Text('${producto.id}'),
+              onTap: () =>
+                  Navigator.pushNamed(context, 'producto', arguments: producto),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Widget _mostarImagenProducto(ProductoModel productoModel) {
+    final tieneFotografia = productoModel.fotoUrl != null;
+    if (tieneFotografia) {
+      return FadeInImage(
+        placeholder: AssetImage(LOADER_IMAGE),
+        image: NetworkImage(productoModel.fotoUrl),
+        height: 300,
+        width: double.infinity,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image(image: AssetImage(NO_IMAGE));
+    }
   }
 }

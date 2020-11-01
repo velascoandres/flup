@@ -150,7 +150,6 @@ class _ProductoPageState extends State<ProductoPage> {
       final bool creo = await productoProvider.create(productoModel);
       if (creo) {
         mostrarSnackbar('Producto creado!!');
-        Navigator.pop(context);
       } else {
         mostrarSnackbar('Error al crear!!');
       }
@@ -172,6 +171,7 @@ class _ProductoPageState extends State<ProductoPage> {
       final picketFile = await picker.getImage(source: _source);
       if (picketFile != null) {
         _image = File(picketFile.path);
+        productoModel.fotoUrl = null;
       } else {
         print('Imagen no seleccionada');
       }
@@ -183,8 +183,12 @@ class _ProductoPageState extends State<ProductoPage> {
 
   _mostrarFoto() {
     if (productoModel.fotoUrl != null) {
-      // TODO arreglar esto
-      return Container();
+      return FadeInImage(
+        placeholder: AssetImage(LOADER_IMAGE),
+        image: NetworkImage(productoModel.fotoUrl),
+        height: 300,
+        fit: BoxFit.cover,
+      );
     }
     if (_image != null) {
       return Image.file(
