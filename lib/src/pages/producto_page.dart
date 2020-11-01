@@ -133,6 +133,11 @@ class _ProductoPageState extends State<ProductoPage> {
     formKey.currentState.save();
     final bool debeEditar = productoModel.id != null;
     setState(() => _guardando = true);
+
+    if (_image != null) {
+      productoModel.fotoUrl = await productoProvider.subirImagen(_image);
+    }
+
     if (debeEditar) {
       final bool edito =
           await productoProvider.update(productoModel.id, productoModel);
@@ -175,6 +180,7 @@ class _ProductoPageState extends State<ProductoPage> {
     }
     setState(() {});
   }
+
   _mostrarFoto() {
     if (productoModel.fotoUrl != null) {
       // TODO arreglar esto
