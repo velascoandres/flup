@@ -20,11 +20,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final prefs = new PreferenciasUsuario();
 
-    print(prefs.token);
+    bool tieneToken = prefs.token != null && prefs.token != '';
     return Provider(
       child: MaterialApp(
         title: 'Material App',
-        initialRoute: 'login',
+        initialRoute:  tieneToken ? 'home' : 'login',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.deepPurple,
