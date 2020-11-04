@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flup/src/shared_prefs/preferencias_usuario.dart';
 import 'package:http/http.dart' as http;
 
 enum OPERATION {
@@ -8,6 +9,7 @@ enum OPERATION {
 
 class UsuarioProvider {
   final String _fireBaseToken = 'AIzaSyAHztdJPe0rVppSz7qGE0Lw5bv7otMnu4o';
+  final prefs = new PreferenciasUsuario();
 
   Future<Map<String, dynamic>> nuevoUsuario(
       String email, String password) async {
@@ -36,7 +38,9 @@ class UsuarioProvider {
     print(resp.body);
     if (resp.statusCode == 200 || resp.statusCode == 201) {
       // salvar el token en el storage
-      return {'ok': true, 'token': decodeResp['idToken']};
+      final token = decodeResp['idToken'];
+      prefs.token = token;
+      return {'ok': true, 'token': token};
     } else {
       return {'ok': false, 'message': decodeResp['error']['message']};
     }

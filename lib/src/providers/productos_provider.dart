@@ -35,7 +35,6 @@ class ProductosProvider extends PrincipalProvider<ProductoModel> {
     final response = await http.Response.fromStream(streamResponse);
 
     if (response.statusCode != 200 && response.statusCode != 201) {
-      print(response.body);
       return null;
     }
     final responseData = json.decode(response.body);
