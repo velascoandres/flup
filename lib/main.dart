@@ -1,3 +1,4 @@
+import 'package:flup/src/pages/registro_page.dart';
 import 'package:flutter/material.dart';
 
 import 'src/bloc/provider.dart';
@@ -14,13 +15,14 @@ class MyApp extends StatelessWidget {
     return Provider(
       child: MaterialApp(
         title: 'Material App',
-        initialRoute: 'home',
+        initialRoute: 'login',
         debugShowCheckedModeBanner: false,
         theme: ThemeData( 
           primaryColor: Colors.deepPurple,
         ),
         routes: {
           'login': (BuildContext context) => LoginPage(),
+          'registro': (BuildContext context) => RegistroPage(),
           'home': (BuildContext context) => HomePage(),
           'producto': (BuildContext context) => ProductoPage(),
         },

@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:flup/src/bloc/login_bloc.dart';
 import 'package:flup/src/bloc/provider.dart';
 import 'package:flup/src/providers/usuario_provider.dart';
+import 'package:flutter/material.dart';
 
 class Posicion {
   double rigth;
@@ -13,7 +12,7 @@ class Posicion {
   Posicion({this.rigth, this.left, this.top, this.bottom});
 }
 
-class LoginPage extends StatelessWidget {
+class RegistroPage extends StatelessWidget {
   final UsuarioProvider usuarioProvider = new UsuarioProvider();
 
   @override
@@ -138,7 +137,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Ingreso',
+                  'Creear Cuenta',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
                 SizedBox(
@@ -157,9 +156,8 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           FlatButton(
-            onPressed: () =>
-                Navigator.pushReplacementNamed(context, 'registro'),
-            child: Text('Crear una nueva cuenta'),
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
+            child: Text('¿Ya tienes cuenta? Login'),
           ),
           SizedBox(
             height: 100,
@@ -228,7 +226,7 @@ class LoginPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         final estaValido = snapshot.hasData;
         return RaisedButton(
-          onPressed: estaValido ? () => _login(bloc, context) : null,
+          onPressed: estaValido ? () => _register(bloc, context) : null,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15.0),
             child: Text('Ingresar'),
@@ -244,8 +242,8 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _login(LoginBloc bloc, BuildContext context) {
-    usuarioProvider.login(bloc.email, bloc.password);
+  _register(LoginBloc bloc, BuildContext context) {
+    usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
     // Navigator.pushReplacementNamed(context, 'home');
   }
 }
