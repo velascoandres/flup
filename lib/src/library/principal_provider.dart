@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flup/src/library/serializable_model.dart';
+import 'package:flup/src/shared_prefs/preferencias_usuario.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,13 +10,16 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
   @protected
   final String url = '';
 
+  final _prefs = new PreferenciasUsuario();
+
+
   @protected
   final String segmento = '';
 
   Future<bool> create(
     T model,
   ) async {
-    final uri = '$url/$segmento.json';
+    final uri = '$url/$segmento.json?auth=${_prefs.token}';
     final modelParsed = json.encode(model.toJson());
 
     // Handling response
@@ -33,7 +37,7 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
     String id,
     T model,
   ) async {
-    final uri = '$url/$segmento/$id.json';
+    final uri = '$url/$segmento/$id.json?auth=${_prefs.token}';
     final modelParsed = json.encode(model.toJson());
 
     // Handling response
@@ -50,7 +54,7 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
   Future<List<T>> findAll(
     FromJsonCallBack fromJsonCallBack,
   ) async {
-    final uri = '$url/$segmento.json';
+    final uri = '$url/$segmento.json?auth=${_prefs.token}';
     final response = await http.get(uri);
 
     final List<T> list = new List();
@@ -85,7 +89,7 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
   Future<bool> delete(
     String id,
   ) async {
-    final uri = '$url/$segmento/$id.json';
+    final uri = '$url/$segmento/$id.json?auth=${_prefs.token}';
     print(uri);
     try {
       final response = await http.delete(uri);
