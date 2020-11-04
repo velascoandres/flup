@@ -3,6 +3,8 @@ import 'package:flup/src/bloc/provider.dart';
 import 'package:flup/src/providers/usuario_provider.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flup/src/utils/utils.dart' as utils;
+
 class Posicion {
   double rigth;
   double left;
@@ -12,7 +14,13 @@ class Posicion {
   Posicion({this.rigth, this.left, this.top, this.bottom});
 }
 
-class RegistroPage extends StatelessWidget {
+class RegistroPage extends StatefulWidget {
+  @override
+  _RegistroPageState createState() => _RegistroPageState();
+}
+
+class _RegistroPageState extends State<RegistroPage> {
+  bool _guardando = false;
   final UsuarioProvider usuarioProvider = new UsuarioProvider();
 
   @override
@@ -137,7 +145,7 @@ class RegistroPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Creear Cuenta',
+                  'Crear Cuenta',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
                 SizedBox(
@@ -226,10 +234,10 @@ class RegistroPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         final estaValido = snapshot.hasData;
         return RaisedButton(
-          onPressed: estaValido ? () => _register(bloc, context) : null,
+          onPressed: (estaValido && !_guardando) ? () => _register(bloc, context) : null,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15.0),
-            child: Text('Ingresar'),
+            child: Text('Registrar'),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
@@ -242,8 +250,17 @@ class RegistroPage extends StatelessWidget {
     );
   }
 
-  _register(LoginBloc bloc, BuildContext context) {
-    usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
+  _register(LoginBloc bloc, BuildContext context) async {
     // Navigator.pushReplacementNamed(context, 'home');
+    setState(() => _guardando = true);
+
+    final Map<String, dynamic> respuesta =
+        await usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
+    if (respuesta['ok']) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      setState(() => _guardando = false);
+      utils.mostrarAlerta(context, respuesta['message']);
+    }
   }
 }

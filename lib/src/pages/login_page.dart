@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:flup/src/bloc/login_bloc.dart';
 import 'package:flup/src/bloc/provider.dart';
 import 'package:flup/src/providers/usuario_provider.dart';
+import 'package:flup/src/utils/utils.dart' as utils;
 
 class Posicion {
   double rigth;
@@ -13,8 +16,15 @@ class Posicion {
   Posicion({this.rigth, this.left, this.top, this.bottom});
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final UsuarioProvider usuarioProvider = new UsuarioProvider();
+
+  bool _guardando = false;
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +238,8 @@ class LoginPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         final estaValido = snapshot.hasData;
         return RaisedButton(
-          onPressed: estaValido ? () => _login(bloc, context) : null,
+          onPressed:
+              (estaValido && _guardando == false) ? () => _login(bloc, context) : null,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15.0),
             child: Text('Ingresar'),
@@ -244,8 +255,15 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _login(LoginBloc bloc, BuildContext context) {
-    usuarioProvider.login(bloc.email, bloc.password);
-    // Navigator.pushReplacementNamed(context, 'home');
+  _login(LoginBloc bloc, BuildContext context) async {
+    setState(() => _guardando = true);
+    final Map<String, dynamic> respuesta =
+        await usuarioProvider.login(bloc.email, bloc.password);
+    if (respuesta['ok']) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      setState(() => _guardando = false);
+      utils.mostrarAlerta(context, respuesta['message']);
+    }
   }
 }
