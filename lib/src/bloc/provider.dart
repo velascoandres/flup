@@ -1,8 +1,10 @@
 import 'package:flup/src/bloc/login_bloc.dart';
+import 'package:flup/src/bloc/productos_bloc.dart';
 import 'package:flutter/material.dart';
 
 class Provider extends InheritedWidget {
-  final loginBloc = LoginBloc();
+  final _loginBloc = LoginBloc();
+  final _productosBloc = ProductosBloc();
 
   static Provider _instancia;
 
@@ -19,6 +21,10 @@ class Provider extends InheritedWidget {
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => true;
 
   static LoginBloc of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<Provider>().loginBloc;
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._loginBloc;
+  }
+
+  static ProductosBloc productosBloc(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._productosBloc;
   }
 }
