@@ -20,16 +20,19 @@ class ProductosBloc {
     _productosController.sink.add(productos);
   }
 
-  void agregarProducto(ProductoModel producto) async {
+  Future<bool> agregarProducto(ProductoModel producto) async {
     _cargandoController.sink.add(true);
-    await _productosProvider.create(producto);
+    final creo = await _productosProvider.create(producto);
     _cargandoController.sink.add(false);
+    return creo;
   }
 
-  void editarProducto(ProductoModel producto) async {
+  Future<bool> editarProducto(ProductoModel producto) async {
     _cargandoController.sink.add(true);
-    await _productosProvider.update(producto.id, producto);
+    final edito = await _productosProvider.update(producto.id, producto);
+    //_productosController.sink.add(producto);
     _cargandoController.sink.add(false);
+    return edito;
   }
 
   Future<bool> borrarProducto(String id) async {

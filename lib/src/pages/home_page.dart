@@ -13,6 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productosBloc = Provider.productosBloc(context);
+    print('Aqui');
     productosBloc.cargarProductos();
 
     return Scaffold(

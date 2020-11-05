@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flup/src/bloc/productos_bloc.dart';
+import 'package:flup/src/bloc/provider.dart';
 import 'package:flup/src/constants/images_paths.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -21,6 +23,8 @@ class _ProductoPageState extends State<ProductoPage> {
   ProductoModel productoModel = new ProductoModel();
   bool _guardando = false;
 
+  ProductosBloc productosBloc;
+
   final productoProvider = new ProductosProvider();
 
   final picker = ImagePicker();
@@ -28,6 +32,7 @@ class _ProductoPageState extends State<ProductoPage> {
 
   @override
   Widget build(BuildContext context) {
+    productosBloc = Provider.productosBloc(context);
     final ProductoModel productoArg = ModalRoute.of(context).settings.arguments;
     if (productoArg != null) productoModel = productoArg;
 
@@ -135,26 +140,26 @@ class _ProductoPageState extends State<ProductoPage> {
     setState(() => _guardando = true);
 
     if (_image != null) {
-      productoModel.fotoUrl = await productoProvider.subirImagen(_image);
+      productoModel.fotoUrl = await productosBloc.subirFoto(_image);
     }
 
     if (debeEditar) {
       final bool edito =
-          await productoProvider.update(productoModel.id, productoModel);
+          await productosBloc.editarProducto(productoModel);
       if (edito) {
         mostrarSnackbar('Producto editado!!');
       } else {
         mostrarSnackbar('Error al editar!!');
       }
     } else {
-      final bool creo = await productoProvider.create(productoModel);
+      final bool creo = await productosBloc.agregarProducto(productoModel);
       if (creo) {
         mostrarSnackbar('Producto creado!!');
       } else {
         mostrarSnackbar('Error al crear!!');
       }
     }
-    Timer(Duration(seconds: 1), () => Navigator.pop(context));
+    Timer(Duration(seconds: 1), () => Navigator.of(context).pushNamedAndRemoveUntil('home', (Route<dynamic> route) => false));
   }
 
   void mostrarSnackbar(String mensaje) {
