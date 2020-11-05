@@ -12,7 +12,6 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
 
   final _prefs = new PreferenciasUsuario();
 
-
   @protected
   final String segmento = '';
 
@@ -61,9 +60,9 @@ abstract class PrincipalProvider<T extends DeserializableModel> {
 
     // Handling response
     try {
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> decodedData = json.decode(response.body);
+      final Map<String, dynamic> decodedData = json.decode(response.body);
 
+      if (response.statusCode == 200 || response.statusCode == 201) {
         if (decodedData == null) return [];
 
         decodedData.forEach(

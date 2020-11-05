@@ -32,10 +32,11 @@ class ProductosBloc {
     _cargandoController.sink.add(false);
   }
 
-  void borrarProducto(String id) async {
+  Future<bool> borrarProducto(String id) async {
     _cargandoController.sink.add(true);
-    await _productosProvider.delete(id);
+    final borro = await _productosProvider.delete(id);
     _cargandoController.sink.add(false);
+    return borro;
   }
 
   Future<String> subirFoto(File foto) async {

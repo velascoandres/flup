@@ -1,3 +1,4 @@
+import 'package:flup/src/bloc/productos_bloc.dart';
 import 'package:flup/src/constants/images_paths.dart';
 import 'package:flutter/material.dart';
 
@@ -11,14 +12,15 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of(context);
+    final productosBloc = Provider.productosBloc(context);
+    productosBloc.cargarProductos();
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
       ),
       floatingActionButton: _crearBoton(context),
-      body: _crearListaProductos(),
+      body: _crearListaProductos(productosBloc),
     );
   }
 
@@ -30,11 +32,9 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _crearListaProductos() {
-    return FutureBuilder(
-      future: productosProvider.findAll(
-        ProductoModel.fromJsonToModel,
-      ),
+  Widget _crearListaProductos(ProductosBloc productosBloc) {
+    return StreamBuilder(
+      stream: productosBloc.productosStream,
       builder:
           (BuildContext context, AsyncSnapshot<List<ProductoModel>> snapshot) {
         if (snapshot.hasData) {
@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
           return ListView.builder(
             itemCount: productos.length,
             itemBuilder: (context, index) =>
-                _productoItem(context, productos[index]),
+                _productoItem(context, productos[index], productosBloc),
           );
         } else {
           return Center(
@@ -53,14 +53,18 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _productoItem(BuildContext context, ProductoModel producto) {
+  Widget _productoItem(
+    BuildContext context,
+    ProductoModel producto,
+    ProductosBloc productosBloc,
+  ) {
     return Dismissible(
       key: UniqueKey(),
       background: Container(
         color: Colors.redAccent,
       ),
       onDismissed: (address) async {
-        final bool borro = await productosProvider.delete(producto.id);
+        final borro = await productosBloc.borrarProducto(producto.id);
         if (borro) {
           utils.mostrarSnackbar(
             context,
