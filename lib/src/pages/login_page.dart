@@ -236,8 +236,9 @@ class _LoginPageState extends State<LoginPage> {
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         final estaValido = snapshot.hasData;
         return RaisedButton(
-          onPressed:
-              (estaValido && _guardando == false) ? () => _login(bloc, context) : null,
+          onPressed: (estaValido && _guardando == false)
+              ? () => _login(bloc, context)
+              : null,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15.0),
             child: Text('Ingresar'),
@@ -255,13 +256,16 @@ class _LoginPageState extends State<LoginPage> {
 
   _login(LoginBloc bloc, BuildContext context) async {
     setState(() => _guardando = true);
-    final Map<String, dynamic> respuesta =
-        await usuarioProvider.login(bloc.email, bloc.password);
-    if (respuesta['ok']) {
+
+    final ingreso = await bloc.loginRefrescarToken(bloc.email, bloc.password);
+    // final Map<String, dynamic> respuesta =
+    //     await usuarioProvider.login(bloc.email, bloc.password);
+
+    if (ingreso) {
       Navigator.pushReplacementNamed(context, 'home');
     } else {
       setState(() => _guardando = false);
-      utils.mostrarAlerta(context, respuesta['message']);
+      utils.mostrarAlerta(context, 'Fallo al ingresar');
     }
   }
 }

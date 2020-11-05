@@ -52,6 +52,22 @@ class PreferenciasUsuario {
     _prefs.setString('token', value);
   }
 
+  String get email {
+    return _prefs.getString('email') ?? '';
+  }
+
+  String get password {
+    return _prefs.getString('password') ?? '';
+  }
+
+  set password(String value) {
+    _prefs.setString('password', value);
+  }
+
+  set email(String value) {
+    _prefs.setString('email', value);
+  }
+
   String get ultimaPagina {
     return _prefs.getString('ultimaPagina') ?? 'home';
   }
